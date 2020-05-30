@@ -42,11 +42,13 @@ void TM1637::display(uint8_t index, uint8_t value, bool show_point)
 	stop();
 	start();
 	write_byte(START_ADDR | index);
-	value = show_point ? 0x80 | DEFAULT_NUMS[value] : DEFAULT_NUMS[value];
-	write_byte(value);
+	// value = show_point ? 0x80 | value : value;
+	write_byte(show_point ? 0x80 | value : value);
 	stop();
 	show();
 }
+
+
 
 void TM1637::display_byte(uint8_t index, uint8_t display_byte)
 {
@@ -107,7 +109,7 @@ void TM1637::write_byte(uint8_t data)
 	digitalWrite(dio_pin_, LOW);
 }
 
-TM1637::PRESSED_KEY TM1637::scan_key()
+uint8_t TM1637::scan_key()
 {
 	uint8_t key = 0x00;
 	start();
@@ -127,7 +129,7 @@ TM1637::PRESSED_KEY TM1637::scan_key()
 	pinMode(dio_pin_, OUTPUT);
 	digitalWrite(dio_pin_, LOW);
 	stop();
-	return TM1637::PRESSED_KEY(key);
+	return key;
 }
 
 void TM1637::clear_display()
